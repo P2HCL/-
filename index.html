@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>学生年终评估卡</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23F97FB4'/%3E%3Cellipse cx='22' cy='24' rx='7' ry='12' fill='%23fff'/%3E%3Cellipse cx='42' cy='24' rx='7' ry='12' fill='%23fff'/%3E%3Ccircle cx='32' cy='42' r='16' fill='%23fff'/%3E%3Ccircle cx='26' cy='40' r='2.4' fill='%2345466B'/%3E%3Ccircle cx='38' cy='40' r='2.4' fill='%2345466B'/%3E%3Cpath d='M28 47 q4 4 8 0' stroke='%23E65C9A' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;500;700;900&family=Baloo+2:wght@600;700;800&display=swap">
+<style>
+:root{
+  --blue-300:#8EC4FF; --blue-400:#6FB0FF; --blue-500:#4E96FF; --blue-600:#3B7DF0; --blue-700:#2F63C9;
+  --pink-200:#FFD9EA; --pink-300:#FFC1DC; --pink-400:#FF9ECB; --pink-500:#F97FB4; --pink-600:#E65C9A; --pink-700:#C9437E;
+  --cream:#FFF8F0; --white:#FFFFFF;
+  --ink:#45466B; --ink-soft:#7B7CA3;
+  --gold:#FFC93C; --gold-deep:#F2A93B;
+  --mint:#7BDCC4; --mint-deep:#45BFA2;
+  --shadow-blue:0 20px 38px rgba(59,125,240,.32);
+  --shadow-pink:0 20px 38px rgba(233,92,154,.30);
+  --radius:26px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 700px at 12% -8%, #FFE3B8 0%, rgba(255,227,184,0) 55%),
+    radial-gradient(1000px 640px at 108% 4%, #FFD3E8 0%, rgba(255,211,232,0) 55%),
+    radial-gradient(900px 600px at 50% 112%, #DCEBFF 0%, rgba(220,235,255,0) 60%),
+    linear-gradient(160deg, #FFF7EC 0%, #FFF0F7 50%, #EFF6FF 100%);
+  min-height:100vh;
+  padding:34px 16px 60px;
+  overflow-x:hidden;
+}
+/* 页面漂浮装饰 */
+.deco{position:fixed;z-index:0;pointer-events:none;opacity:.5}
+.d-cloud{position:fixed;z-index:0;pointer-events:none;opacity:.45}
+.d-cloud .cloud{fill:#FFFFFF}
+.d-s1{top:6%;left:4%}
+.d-s2{top:14%;right:6%;transform:rotate(12deg)}
+.d-s3{bottom:10%;left:5%}
+.d-s4{bottom:16%;right:4%;transform:rotate(-10deg)}
+.d-s5{top:42%;left:2%;opacity:.35}
+.d-s6{top:48%;right:2%;opacity:.35}
+.star-fill{fill:var(--gold)}
+
+:focus-visible{outline:2px solid var(--blue-500);outline-offset:3px;border-radius:8px}
+
+main.card{
+  position:relative;z-index:1;
+  max-width:520px;margin:0 auto;
+  display:flex;flex-direction:column;gap:20px;
+}
+
+/* ===== 通用面板(3D 贴纸感) ===== */
+.panel{
+  position:relative;
+  border-radius:var(--radius);
+  padding:22px 24px;
+}
+.panel::after{ /* 内高光 */
+  content:"";position:absolute;inset:4px;border-radius:calc(var(--radius) - 6px);
+  pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 42%);
+  mix-blend-mode:screen;
+}
+
+/* ===== 蓝色面板：学生信息 ===== */
+.panel-blue{
+  background:linear-gradient(155deg, var(--blue-300) 0%, var(--blue-500) 55%, var(--blue-600) 100%);
+  box-shadow:0 10px 0 var(--blue-700), var(--shadow-blue);
+  color:#fff;
+  overflow:visible;
+}
+.panel-blue .dots-bg{
+  position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.16) 1.6px, transparent 1.6px);
+  background-size:22px 22px;
+}
+.blue-inner{position:relative;display:flex;align-items:center;gap:20px;min-height:118px}
+.photo-wrap{position:relative;flex:0 0 auto}
+.photo{
+  width:104px;height:104px;border-radius:26px;object-fit:cover;
+  border:4px solid #fff;box-shadow:0 8px 16px rgba(20,50,120,.35), inset 0 2px 4px rgba(0,0,0,.12);
+  background:#EAF3FF;display:block;
+}
+.badge-star{
+  position:absolute;top:-14px;right:-12px;width:34px;height:34px;
+  filter:drop-shadow(0 3px 4px rgba(120,70,0,.35));
+}
+.badge-star svg{width:100%;height:100%}
+.badge-star .star-b{fill:var(--gold);stroke:var(--gold-deep);stroke-width:2}
+.info{flex:1;min-width:0}
+.name-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.name-label{font-size:13px;opacity:.9;letter-spacing:2px}
+.name{
+  font-family:'ZCOOL KuaiLe','Noto Sans SC',sans-serif;
+  font-size:34px;line-height:1.1;font-weight:400;
+  text-shadow:0 2px 0 rgba(30,60,140,.25);
+}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:15px}
+.meta-item .tag{
+  background:rgba(255,255,255,.24);border-radius:999px;padding:2px 10px;
+  font-size:12.5px;letter-spacing:1px;white-space:nowrap;
+}
+.meta-item .val{font-weight:700;font-size:15.5px}
+/* 蓝色面板右上角：20周年横版萌兔 */
+.bunny-banner{
+  position:absolute;top:-16px;right:-14px;width:46%;max-width:230px;
+  transform:rotate(5deg);z-index:2;
+  filter:drop-shadow(0 8px 14px rgba(20,60,150,.35));
+  pointer-events:none;
+}
+
+/* ===== 白色面板：评估关键词 ===== */
+.panel-white{
+  background:var(--white);
+  box-shadow:0 8px 0 #E2E7F4, 0 16px 30px rgba(90,100,150,.16);
+  padding:14px 20px;
+}
+.panel-white .kw-title{
+  display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);margin-bottom:8px;
+}
+.panel-white .kw-title svg{width:15px;height:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:14px;font-weight:700;color:var(--ink);
+  border-radius:999px;padding:6px 13px;
+  box-shadow:0 3px 0 rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.9);
+}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.85}
+.chip.c1{background:#E4F0FF;color:#2F63C9}
+.chip.c2{background:#FFE7F2;color:#C9437E}
+.chip.c3{background:#FFF4D6;color:#B07D0E}
+.chip.c4{background:#DFF6EF;color:#1E8F74}
+
+/* ===== 翻译按钮行(白色框下方) ===== */
+.translate-row{position:relative;display:flex;align-items:flex-start;gap:14px;padding-top:4px}
+.translate-box{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.btn-translate{
+  display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+  background:var(--white);color:var(--pink-600);
+  font-family:'Baloo 2','Noto Sans SC',sans-serif;
+  font-size:15px;font-weight:700;letter-spacing:.5px;
+  border:2px solid var(--pink-300);border-radius:999px;
+  padding:9px 18px;cursor:pointer;
+  box-shadow:0 4px 0 var(--pink-200), 0 8px 16px rgba(233,92,154,.20);
+  transition:transform .15s cubic-bezier(.22,1,.36,1), box-shadow .15s;
+}
+.btn-translate svg{width:16px;height:16px}
+.btn-translate:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--pink-200),0 12px 20px rgba(233,92,154,.25)}
+.btn-translate:active{transform:translateY(2px);box-shadow:0 2px 0 var(--pink-200)}
+/* 按钮旁的竖版萌兔 */
+.bunny-mascot{
+  width:74px;flex:0 0 auto;transform:rotate(-4deg);
+  filter:drop-shadow(0 10px 16px rgba(180,70,130,.30));
+  pointer-events:none;
+}
+/* 英文翻译面板 */
+.tr-panel{
+  overflow:hidden;max-height:0;opacity:0;
+  transition:max-height .45s cubic-bezier(.22,1,.36,1), opacity .35s, margin .35s;
+  background:var(--white);border-radius:18px;
+  box-shadow:0 6px 0 #E2E7F4, 0 12px 24px rgba(90,100,150,.14);
+  margin:0;
+}
+.tr-panel.open{max-height:520px;opacity:1;margin:2px 0 0}
+.tr-inner{padding:16px 18px}
+.tr-head{display:flex;align-items:center;gap:8px;font-family:'Baloo 2','Noto Sans SC',sans-serif;font-weight:800;font-size:15px;color:var(--pink-600);margin-bottom:8px}
+.tr-head svg{width:16px;height:16px}
+.tr-full{font-size:14px;line-height:1.75;color:var(--ink);border-bottom:1px dashed #E5E0F0;padding-bottom:10px;margin-bottom:10px}
+.tr-segs{display:flex;flex-direction:column;gap:6px}
+.tr-seg{font-size:13px;line-height:1.6;color:var(--ink-soft);padding-left:12px;border-left:3px solid var(--pink-200)}
+.tr-seg b{color:var(--pink-600);font-weight:700;margin-right:6px}
+
+/* ===== 粉色面板：老师评价 ===== */
+.panel-pink{
+  background:linear-gradient(160deg, #FFEAF3 0%, #FFD6E8 45%, #FFC7DF 100%);
+  box-shadow:0 10px 0 #E6A7C7, 0 18px 34px rgba(214,112,160,.26);
+  color:var(--pink-700);
+  overflow:visible;
+}
+.panel-pink .dots-bg{
+  position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;
+  background-image:radial-gradient(rgba(201,67,126,.10) 1.6px, transparent 1.6px);
+  background-size:20px 20px;
+}
+.pink-inner{position:relative}
+.pink-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.pink-title{display:flex;align-items:center;gap:8px;font-family:'ZCOOL KuaiLe','Noto Sans SC',sans-serif;font-size:22px;color:var(--pink-700)}
+.pink-title svg{width:20px;height:20px}
+.pink-title .heart{fill:var(--gold)}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(201,67,126,.30);
+  transition:background .3s, transform .3s;
+}
+.dot.on{background:var(--gold);box-shadow:0 0 0 3px rgba(201,67,126,.22)}
+.dot.cur{transform:scale(1.35)}
+.count{font-size:12px;color:#B05384;font-family:'Baloo 2',sans-serif;font-weight:700}
+
+/* 段落列表 */
+.seg-list{display:flex;flex-direction:column;gap:12px;min-height:66px}
+.idle-tip{
+  display:flex;align-items:center;gap:10px;justify-content:center;
+  background:var(--white);border:2px dashed #F2BBD6;
+  border-radius:16px;padding:18px 16px;font-size:14.5px;color:#C9437E;
+  box-shadow:0 4px 0 rgba(201,67,126,.14);
+}
+.idle-tip svg{width:22px;height:22px}
+.idle-tip .spark{fill:var(--gold)}
+.seg-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--white);color:var(--ink);
+  border-radius:18px;padding:20px 22px;min-height:98px;
+  box-shadow:0 6px 0 rgba(190,90,140,.20);
+  opacity:0;transform:translateY(14px) scale(.97);
+  transition:opacity .5s cubic-bezier(.22,1,.36,1), transform .5s cubic-bezier(.22,1,.36,1);
+}
+.seg-card.show{opacity:1;transform:translateY(0) scale(1)}
+.seg-card.active{
+  box-shadow:0 6px 0 rgba(190,90,140,.20), 0 0 0 3px var(--gold);
+  background:linear-gradient(160deg,#fff,#FFF9EC);
+}
+.seg-card.done{opacity:.8}
+.seg-body{flex:1;min-width:0}
+.seg-text{font-size:17.5px;line-height:1.95;font-weight:600;text-align:center}
+.seg-play{
+  flex:0 0 auto;width:32px;height:32px;border-radius:50%;
+  border:none;cursor:pointer;
+  background:linear-gradient(160deg,var(--blue-400),var(--blue-600));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 0 var(--blue-700);
+  transition:transform .15s, box-shadow .15s;
+  margin-top:2px;
+}
+.seg-play svg{width:14px;height:14px}
+.seg-play:hover{transform:translateY(-1px) scale(1.06)}
+.seg-play:active{transform:translateY(2px);box-shadow:0 1px 0 var(--blue-700)}
+.seg-card.active .seg-play{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+
+/* 全文寄语卡片(全部读完后再出现) */
+.full-card{
+  display:none;background:var(--white);color:var(--ink);
+  border-radius:18px;padding:22px 24px;
+  border-left:6px solid var(--gold);
+  box-shadow:0 6px 0 rgba(190,90,140,.20), 0 0 0 3px var(--gold);
+  font-size:17.5px;line-height:2.05;font-weight:500;
+  animation:pop .5s cubic-bezier(.22,1,.36,1);
+}
+.full-card.show{display:block}
+.seg-list.finished .seg-card{display:none}
+.seg-list.finished .idle-tip{display:none}
+@keyframes pop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* 控制按钮 */
+.controls{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  border:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+  font-size:14.5px;font-weight:700;border-radius:999px;padding:10px 18px;
+  transition:transform .15s cubic-bezier(.22,1,.36,1), box-shadow .15s, opacity .2s;
+}
+.btn svg{width:15px;height:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+.btn-primary{
+  background:var(--white);color:var(--pink-600);
+  box-shadow:0 5px 0 var(--pink-200), 0 10px 18px rgba(190,40,110,.22);
+}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px)}
+.btn-primary:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 var(--pink-200)}
+.btn-ghost{
+  background:var(--white);color:var(--pink-600);border:2px solid var(--pink-300);
+  box-shadow:0 4px 0 var(--pink-200);
+}
+.btn-ghost:hover:not(:disabled){transform:translateY(-2px)}
+.btn-ghost:active:not(:disabled){transform:translateY(2px)}
+.btn-start-wrap{display:flex;align-items:center;gap:12px}
+
+/* 顶部声音开关 */
+.sound-toggle{
+  position:fixed;top:16px;right:16px;z-index:5;
+  width:44px;height:44px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.8);
+  background:rgba(255,255,255,.9);color:var(--pink-600);
+  box-shadow:0 6px 16px rgba(120,60,120,.25);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:transform .15s;
+}
+.sound-toggle:hover{transform:scale(1.08)}
+.sound-toggle svg{width:20px;height:20px}
+.sound-toggle[aria-checked="false"]{background:#F3EAF3;color:#B9A6B9}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;font-size:13.5px;
+  padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .3s, transform .3s;z-index:6;box-shadow:0 8px 20px rgba(0,0,0,.25);
+  max-width:86vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:560px){
+  body{padding:26px 12px 50px}
+  main.card{gap:16px}
+  .panel{padding:18px 16px}
+  .photo{width:86px;height:86px;border-radius:22px}
+  .name{font-size:28px}
+  .meta-item{font-size:14px}
+  .bunny-banner{width:44%;top:-12px;right:-10px}
+  .bunny-mascot{width:56px}
+  .btn{font-size:13.5px;padding:9px 14px}
+  .seg-text{font-size:15.5px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- 漂浮装饰 -->
+<svg class="d-cloud d-s1" width="110" height="60" viewBox="0 0 110 60" aria-hidden="true"><path class="cloud" d="M24 48 a14 14 0 0 1 2-27.8 A18 18 0 0 1 60 18 a15 15 0 0 1 26 11 a12 12 0 0 1 0 19 Z"/></svg>
+<svg class="d-cloud" style="top:20%;left:2%" width="80" height="44" viewBox="0 0 110 60" aria-hidden="true"><path class="cloud" opacity=".55" d="M24 48 a14 14 0 0 1 2-27.8 A18 18 0 0 1 60 18 a15 15 0 0 1 26 11 a12 12 0 0 1 0 19 Z"/></svg>
+<svg class="deco d-s1" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path class="star-fill" d="M12 1.6l3.1 6.3 7 1-5 4.9 1.2 7-6.3-3.3-6.3 3.3 1.2-7-5-4.9 7-1z"/></svg>
+<svg class="deco d-s2" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path class="star-fill" d="M12 1.6l3.1 6.3 7 1-5 4.9 1.2 7-6.3-3.3-6.3 3.3 1.2-7-5-4.9 7-1z"/></svg>
+<svg class="deco d-s3" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="star-fill" d="M12 1.6l3.1 6.3 7 1-5 4.9 1.2 7-6.3-3.3-6.3 3.3 1.2-7-5-4.9 7-1z"/></svg>
+<svg class="deco d-s4" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path class="star-fill" d="M12 1.6l3.1 6.3 7 1-5 4.9 1.2 7-6.3-3.3-6.3 3.3 1.2-7-5-4.9 7-1z"/></svg>
+<svg class="deco d-s5" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="#FF9ECB"/></svg>
+<svg class="deco d-s6" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="#8EC4FF"/></svg>
+
+<!-- 声音开关 -->
+<button class="sound-toggle" id="soundToggle" role="switch" aria-checked="true" aria-label="朗读声音开关" title="朗读声音开关">
+  <svg id="iconSoundOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.7 5.3a9 9 0 0 1 0 13.4"/></svg>
+  <svg id="iconSoundOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
+</button>
+
+<main class="card">
+
+  <!-- ===== 蓝色面板：照片 + 姓名 / 年级 / 任课教师 ===== -->
+  <section class="panel panel-blue" aria-label="学生信息">
+    <div class="dots-bg"></div>
+    <!-- 第二张图：20周年横版萌兔，放在蓝色边框右上角 -->
+    <img class="bunny-banner" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/T88JbkrSoobvpfx6Xd8c0fnwnjc" alt="20周年庆快乐装饰贴纸">
+    <div class="blue-inner">
+      <!-- 第一张图：学生照片 -->
+      <div class="photo-wrap">
+        <img class="photo" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/A1bwbFahmovWXTxKVoScz00Snpe" alt="学生照片">
+        <span class="badge-star" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path class="star-b" d="M12 1.6l3.1 6.3 7 1-5 4.9 1.2 7-6.3-3.3-6.3 3.3 1.2-7-5-4.9 7-1z"/></svg>
+        </span>
+      </div>
+      <div class="info">
+        <div class="name-row">
+          <span class="name-label">姓名</span>
+          <span class="name" id="nameField">王小明</span>
+        </div>
+        <div class="meta">
+          <div class="meta-item"><span class="tag">年级</span><span class="val" id="gradeField">P6HCL</span></div>
+          <div class="meta-item"><span class="tag">任课教师</span><span class="val" id="teacherField">史萍老师</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 白色面板：评估关键词 ===== -->
+  <section class="panel panel-white" aria-label="评估关键词">
+    <div class="kw-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L4.7 17a2.6 2.6 0 0 0 4.2 3L12 17l3.1 3a2.6 2.6 0 0 0 4.2-3L14 9.5V3"/></svg>
+      本期评估关键词
+    </div>
+    <div class="chips">
+      <span class="chip c1">学习认真</span>
+      <span class="chip c2">任务完成好</span>
+      <span class="chip c3">阅读理解进步</span>
+      <span class="chip c4">把握重点准确</span>
+    </div>
+  </section>
+
+  <!-- ===== 翻译按钮（白色框下方） ===== -->
+  <div class="translate-row">
+    <div class="translate-box">
+      <button class="btn-translate" id="translateBtn" aria-expanded="false" aria-controls="translatePanel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9M9 3v2M6.5 3a10 10 0 0 1 3 9.5M5 21 20 6M19 10l3 3M16 13l4 4"/></svg>
+        <span class="tr-label">英文翻译</span>
+      </button>
+      <div class="tr-panel" id="translatePanel">
+        <div class="tr-inner">
+          <div class="tr-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9M9 3v2M6.5 3a10 10 0 0 1 3 9.5M5 21 20 6M19 10l3 3M16 13l4 4"/></svg>
+            English Translation
+          </div>
+          <p class="tr-full" id="trFull"></p>
+          <div class="tr-segs" id="trSegs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 粉色面板：老师评价 + 分段朗读 ===== -->
+  <section class="panel panel-pink" aria-label="老师评价">
+    <div class="dots-bg"></div>
+    <div class="pink-inner">
+      <div class="pink-head">
+        <div class="pink-title">
+          <svg viewBox="0 0 24 24"><path class="heart" d="M12 21C7 16.5 2.5 13 2.5 8.8 2.5 6 4.7 4 7.3 4c1.8 0 3.4 1 4.7 2.7C13.3 5 14.9 4 16.7 4c2.6 0 4.8 2 4.8 4.8 0 4.2-4.5 7.7-9.5 12.2z"/></svg>
+          老师寄语
+        </div>
+        <div class="count-wrap" style="display:flex;align-items:center;gap:10px">
+          <span class="count" id="countText"></span>
+          <div class="dots" id="dots" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="seg-list" id="segList" aria-live="polite">
+        <div class="idle-tip" id="idleTip">
+          <svg viewBox="0 0 24 24"><path class="spark" d="M12 1.6l3.1 6.3 7 1-5 4.9 1.2 7-6.3-3.3-6.3 3.3 1.2-7-5-4.9 7-1z"/></svg>
+          准备好了吗？同学！点击下方开始朗读
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="btn-start-wrap">
+          <button class="btn btn-primary" id="startBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>
+            <span id="startLabel">开始朗读</span>
+          </button>
+          <img class="bunny-mascot" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/YsuVb50x9oAq5LxKM8PcEPu3nLf" alt="可爱的周年庆小兔子">
+        </div>
+        <button class="btn btn-ghost" id="pauseBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1.2"/><rect x="14" y="4" width="4" height="16" rx="1.2"/></svg>
+          <span id="pauseLabel">暂停</span>
+        </button>
+        <button class="btn btn-ghost" id="replayBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          重新播放
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 背景音乐（背景歌曲，音量低于朗读声） -->
+<audio id="bgMusic" src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/RK42bl03So5W5pxjMjicsGt9nNb" loop preload="auto"></audio>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  'use strict';
+  /* ===== 内容数据（可在此直接修改评语 / 英文翻译） ===== */
+  var EVAL_TEXT = '小明，这一年来你学习态度认真，能够认真完成老师布置的学习任务。阅读理解方面进步明显，对文章重点的把握也越来越准确。';
+  var EN_FULL = 'Wang Xiao Ming, over this past year you have been serious and earnest in your studies, carefully completing every learning task your teacher assigned. Your reading comprehension has improved noticeably, and you are grasping the key points of passages more and more accurately.';
+  var EN_SEGS = [
+    'Wang Xiao Ming, over this past year you have been serious and earnest in your studies,',
+    'and you have carefully completed every learning task your teacher assigned.',
+    'Your reading comprehension has improved noticeably,',
+    'and you are grasping the key points of passages more and more accurately.'
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var segList = $('segList'), dotsWrap = $('dots'), idleTip = $('idleTip');
+  var startBtn = $('startBtn'), pauseBtn = $('pauseBtn'), replayBtn = $('replayBtn');
+  var startLabel = $('startLabel'), pauseLabel = $('pauseLabel');
+  var translateBtn = $('translateBtn'), translatePanel = $('translatePanel');
+  var nameField = $('nameField'), gradeField = $('gradeField'), teacherField = $('teacherField');
+  var countText = $('countText'), toast = $('toast'), bgMusic = $('bgMusic');
+  var soundToggle = $('soundToggle'), iconOn = $('iconSoundOn'), iconOff = $('iconSoundOff');
+
+  var ICONS = {
+    play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>',
+    pause: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1.2"/><rect x="14" y="4" width="4" height="16" rx="1.2"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>'
+  };
+
+  var segs = [];
+  var fullCard = null, fullText = '';
+  var speaking = false, paused = false, curIdx = 0, muted = false;
+  var supported = ('speechSynthesis' in window);
+  var seq = 0, timer = null;
+
+  /* ---------- 语音 ---------- */
+  var voices = [];
+  function loadVoices(){ try{ voices = window.speechSynthesis.getVoices(); }catch(e){} }
+  if (supported){ loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+  function pickVoice(){
+    var zh = voices.filter(function(v){
+      return /zh|cmn|chinese|中文|普通话/i.test((v.lang || '') + ' ' + (v.name || ''));
+    });
+    var prefs = ['Xiaoxiao','Xiaoyi','Xiaomeng','Yaoyao','Huihui','Ting-Ting','Meijia','Google 普通话','Yunxi','Kangkang','Sinji','Microsoft'];
+    for (var i = 0; i < prefs.length; i++){
+      var hit = zh.filter(function(v){ return v.name.indexOf(prefs[i]) > -1; })[0];
+      if (hit) return hit;
+    }
+    return zh[0] || null;
+  }
+  function speak(text, onend){
+    if (muted || !supported){ if (onend) onend(); return; }
+    try{
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN';
+      var v = pickVoice();
+      if (v) u.voice = v;
+      u.rate = 0.95; u.pitch = 1.12; u.volume = 0.9;
+      u.onend = onend;
+      u.onerror = function(e){
+        if (e && e.error && (e.error === 'canceled' || e.error === 'interrupted')) return;
+        if (onend) onend();
+      };
+      window.speechSynthesis.speak(u);
+    }catch(e){ if (onend) onend(); }
+  }
+  function stopAll(){
+    seq++;
+    if (supported) { try{ window.speechSynthesis.cancel(); }catch(e){} }
+    clearTimeout(timer);
+  }
+
+  /* ---------- 背景音乐 ---------- */
+  var bgFadeTimer = null;
+  function startMusic(){
+    if (!bgMusic) return;
+    clearInterval(bgFadeTimer);
+    bgMusic.volume = 0.2;
+    var pr = bgMusic.play();
+    if (pr && pr.catch) pr.catch(function(){});
+  }
+  function pauseMusic(){
+    if (!bgMusic) return;
+    clearInterval(bgFadeTimer);
+    if (!bgMusic.paused) bgMusic.pause();
+  }
+  function stopMusic(){
+    if (!bgMusic) return;
+    clearInterval(bgFadeTimer);
+    bgFadeTimer = setInterval(function(){
+      if (bgMusic.volume <= 0.02){
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+        bgMusic.volume = 0.2;
+        clearInterval(bgFadeTimer);
+      } else {
+        bgMusic.volume = Math.max(0, bgMusic.volume - 0.03);
+      }
+    }, 50);
+  }
+
+  /* ---------- 自动分段 ---------- */
+  function splitSegments(text){
+    var parts = text.match(/[^。！？；]*[。！？；]|[^。！？；]+$/g) || [text];
+    var out = [];
+    parts.forEach(function(p){
+      p = p.trim();
+      if (!p) return;
+      if (p.length > 22){
+        var subs = p.match(/[^，、]*[，、]|[^，、]+$/g) || [p];
+        var cur = '';
+        subs.forEach(function(s){
+          if ((cur + s).length <= 22){ cur += s; }
+          else { if (cur.trim()) out.push(cur.trim()); cur = s; }
+        });
+        if (cur.trim()) out.push(cur.trim());
+      } else {
+        out.push(p);
+      }
+    });
+    return out.filter(Boolean);
+  }
+
+  function buildSegments(){
+    var name = (nameField.textContent || '').trim() || '小明';
+    var text = EVAL_TEXT.replace('小明', name);
+    segs = splitSegments(text);
+    fullText = text;
+    resetPlayback();
+    countText.textContent = '共 ' + segs.length + ' 条';
+    renderSegments();
+    renderTranslate();
+  }
+
+  function resetPlayback(){
+    stopAll();
+    speaking = false;
+    paused = false;
+    curIdx = 0;
+    segList.classList.remove('finished');
+    if (fullCard) fullCard.classList.remove('show');
+    updatePauseUI();
+    setPlayingUI(false);
+  }
+
+  function renderSegments(){
+    segList.innerHTML = '';
+    idleTip = null;
+    var idle = document.createElement('div');
+    idle.className = 'idle-tip';
+    idle.id = 'idleTip';
+    idle.innerHTML = '<svg viewBox="0 0 24 24"><path class="spark" d="M12 1.6l3.1 6.3 7 1-5 4.9 1.2 7-6.3-3.3-6.3 3.3 1.2-7-5-4.9 7-1z"/></svg>准备好了吗？同学！点击下方开始朗读';
+    segList.appendChild(idle);
+    idleTip = idle;
+
+    fullCard = document.createElement('div');
+    fullCard.className = 'full-card';
+    fullCard.id = 'fullCard';
+    fullCard.textContent = fullText;
+    segList.appendChild(fullCard);
+
+    segs.forEach(function(s, i){
+      var card = document.createElement('div');
+      card.className = 'seg-card';
+      card.innerHTML =
+        '<div class="seg-body"><p class="seg-text"></p></div>' +
+        '<button class="seg-play" aria-label="单独朗读第' + (i + 1) + '条">' + ICONS.play + '</button>';
+      card.querySelector('.seg-text').textContent = s;
+      card.querySelector('.seg-play').addEventListener('click', function(){ startFrom(i); });
+      segList.appendChild(card);
+    });
+
+    dotsWrap.innerHTML = '';
+    segs.forEach(function(){
+      var d = document.createElement('span');
+      d.className = 'dot';
+      dotsWrap.appendChild(d);
+    });
+    renderState();
+  }
+
+  function renderState(){
+    var cards = segList.querySelectorAll('.seg-card');
+    var dots = dotsWrap.querySelectorAll('.dot');
+    cards.forEach(function(c, k){
+      c.classList.remove('show', 'active', 'done');
+      if (!speaking && k >= curIdx) return;
+      if (k < curIdx) c.classList.add('show', 'done');
+      if (k === curIdx && speaking) c.classList.add('show', 'active');
+    });
+    dots.forEach(function(d, k){
+      d.classList.toggle('on', k <= curIdx);
+      d.classList.toggle('cur', k === curIdx && speaking);
+    });
+    if (idleTip) idleTip.style.display = (!speaking && !segList.classList.contains('finished')) ? 'flex' : 'none';
+  }
+
+  function renderTranslate(){
+    $('trFull').textContent = EN_FULL;
+    var wrap = $('trSegs');
+    wrap.innerHTML = '';
+    var n = Math.max(EN_SEGS.length, segs.length);
+    for (var i = 0; i < n; i++){
+      var div = document.createElement('div');
+      div.className = 'tr-seg';
+      div.innerHTML = '<b>' + (i + 1) + '.</b><span></span>';
+      div.querySelector('span').textContent = EN_SEGS[i] || EN_SEGS[EN_SEGS.length - 1];
+      wrap.appendChild(div);
+    }
+  }
+
+  /* ---------- 播放控制 ---------- */
+  function playCurrent(){
+    var mySeq = seq;
+    if (curIdx >= segs.length){ finish(); return; }
+    var done = function(){
+      if (seq !== mySeq) return;
+      curIdx++;
+      renderState();
+      playCurrent();
+    };
+    if (supported && !muted){
+      speak(segs[curIdx], done);
+    } else {
+      clearTimeout(timer);
+      timer = setTimeout(done, Math.max(2200, segs[curIdx].length * 320));
+    }
+    renderState();
+    setPlayingUI(true);
+  }
+
+  function playFrom(i){
+    stopAll();
+    speaking = true;
+    paused = false;
+    curIdx = i;
+    segList.classList.remove('finished');
+    if (fullCard) fullCard.classList.remove('show');
+    updatePauseUI();
+    startMusic();
+    playCurrent();
+  }
+
+  function finish(){
+    speaking = false;
+    paused = false;
+    curIdx = segs.length;
+    renderState();
+    setPlayingUI(false);
+    updatePauseUI();
+    segList.classList.add('finished');
+    if (fullCard){ fullCard.textContent = fullText; fullCard.classList.add('show'); }
+    stopMusic();
+  }
+
+  function setPlayingUI(on){
+    startBtn.disabled = on;
+    pauseBtn.disabled = !on;
+  }
+
+  function updatePauseUI(){
+    pauseLabel.textContent = paused ? '继续' : '暂停';
+  }
+
+  startBtn.addEventListener('click', function(){ playFrom(0); });
+  replayBtn.addEventListener('click', function(){ playFrom(0); });
+
+  pauseBtn.addEventListener('click', function(){
+    if (!speaking) return;
+    if (paused){
+      paused = false;
+      updatePauseUI();
+      if (supported){
+        try{
+          if (window.speechSynthesis.paused){ window.speechSynthesis.resume(); }
+          else { stopAll(); playFrom(curIdx); }
+          startMusic();
+        }catch(e){ stopAll(); playFrom(curIdx); }
+      } else {
+        playCurrent();
+      }
+    } else {
+      paused = true;
+      updatePauseUI();
+      pauseMusic();
+      clearTimeout(timer);
+      if (supported){
+        try{ window.speechSynthesis.pause(); }catch(e){}
+      }
+    }
+  });
+
+  /* ---------- 翻译按钮 ---------- */
+  translateBtn.addEventListener('click', function(){
+    var open = translatePanel.classList.toggle('open');
+    translateBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    translateBtn.querySelector('.tr-label').textContent = open ? '收起翻译' : '英文翻译';
+  });
+
+  /* ---------- 声音开关 ---------- */
+  soundToggle.addEventListener('click', function(){
+    muted = !muted;
+    soundToggle.setAttribute('aria-checked', muted ? 'false' : 'true');
+    iconOn.style.display = muted ? 'none' : '';
+    iconOff.style.display = muted ? '' : 'none';
+    if (muted){
+      stopMusic();
+      if (speaking){
+        stopAll();
+        speaking = false;
+        paused = false;
+        curIdx = 0;
+        segList.classList.remove('finished');
+        if (fullCard) fullCard.classList.remove('show');
+        renderState();
+        setPlayingUI(false);
+        updatePauseUI();
+        showToast('已静音，朗读和音乐已停止');
+      } else {
+        showToast('已静音');
+      }
+    } else {
+      showToast('已开启声音');
+    }
+  });
+
+  /* ---------- 提示 ---------- */
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2400);
+  }
+
+  /* ---------- 初始化 ---------- */
+  buildSegments();
+  if (!supported){
+    showToast('当前浏览器不支持语音朗读，将自动逐条展示');
+  }
+})();
+</script>
+</body>
+</html>
